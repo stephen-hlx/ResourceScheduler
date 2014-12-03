@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<case>
+  <config>
+    <gateway size="3"/>
+    <strategies>
+      <strategy id="0" type="SimpleStrategy"/>
+      <strategy id="1" type="GroupPrioritisedStrategy"/>
+    </strategies>
+    <schedulers>
+      <scheduler id="0" type="ResourceScheduler" strategyId="1"/>
+      <scheduler id="1" type="ResourceScheduler" strategyId="1"/>
+    </schedulers>
+  </config>
+  <instructions>
+    <instruction subject="main" action="wait" length="5000"/> <!-- wait for 5 seconds before starting the program -->
+
+    <!-- put the generated message content here -->
+
+    <instruction subject="main" action="wait" length="10000"/> <!-- wait for 10 seconds before altering the size of gateway, this could be adjusted to some other value, and it depends on at roughly what time the gateway's setSize should happen -->
+    <instruction subject="gateway" action="setSize" size="8"/>
+
+    <instruction subject="scheduler" id="0" action="cancelGroup" groupId="4"/>
+
+    <instruction subject="main" action="wait" length="5000"/> <!-- wait for 5 seconds before setting a new strategy, similarly, a wait operation is needed here if the setStrategy should happen sometime later. Do remember that sendMessage is a non-blocking operation -->
+    <instruction subject="scheduler" id="0" action="setStrategy" strategyId="0"/>
+
+    <!-- feel free to put more generated message content here -->
+
+    <instruction subject="main" action="wait" length="10000"/>
+    <instruction subject="scheduler" id="0" action="shutdown"/>
+  </instructions>
+</case>
+
